@@ -1,14 +1,8 @@
-<p align="center"><img src="etc/assets/mongo-gopher.png" width="250"></p>
-<p align="center">
-  <a href="https://goreportcard.com/report/github.com/zhangdapeng520/zdpgo_mongo"><img src="https://goreportcard.com/badge/github.com/zhangdapeng520/zdpgo_mongo"></a>
-  <a href="https://pkg.go.dev/github.com/zhangdapeng520/zdpgo_mongo/mongo"><img src="etc/assets/godev-mongo-blue.svg" alt="docs"></a>
-  <a href="https://pkg.go.dev/github.com/zhangdapeng520/zdpgo_mongo/bson"><img src="etc/assets/godev-bson-blue.svg" alt="docs"></a>
-  <a href="https://www.mongodb.com/docs/drivers/go/current/"><img src="etc/assets/docs-mongodb-green.svg"></a>
-</p>
+# zdpgo_mongo
 
-# MongoDB Go Driver
+本项目基于go.mongodb.org/mongo-driver再次开发，仅供学习研究。
 
-The MongoDB supported driver for Go.
+Golang连接MongoDB的底层驱动。
 
 ______________________________________________________________________
 
@@ -23,7 +17,8 @@ ______________________________________________________________________
 ## Installation
 
 The recommended way to get started using the MongoDB Go driver is by using Go modules to install the dependency in
-your project. This can be done either by importing packages from `github.com/zhangdapeng520/zdpgo_mongo` and having the build
+your project. This can be done either by importing packages from `github.com/zhangdapeng520/zdpgo_mongo` and having the
+build
 step install the dependency or by explicitly running
 
 ```bash
@@ -44,12 +39,12 @@ To get started with the driver, import the `mongo` package and create a `mongo.C
 
 ```go
 import (
-    "context"
-    "time"
+"context"
+"time"
 
-    "github.com/zhangdapeng520/zdpgo_mongo/mongo"
-    "github.com/zhangdapeng520/zdpgo_mongo/mongo/options"
-    "github.com/zhangdapeng520/zdpgo_mongo/mongo/readpref"
+"github.com/zhangdapeng520/zdpgo_mongo/mongo"
+"github.com/zhangdapeng520/zdpgo_mongo/mongo/options"
+"github.com/zhangdapeng520/zdpgo_mongo/mongo/readpref"
 )
 
 ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -60,16 +55,18 @@ client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost
 Make sure to defer a call to `Disconnect` after instantiating your client:
 
 ```go
-defer func() {
-    if err = client.Disconnect(ctx); err != nil {
-        panic(err)
-    }
+defer func () {
+if err = client.Disconnect(ctx); err != nil {
+panic(err)
+}
 }()
 ```
 
-For more advanced configuration and authentication, see the [documentation for mongo.Connect](https://pkg.go.dev/github.com/zhangdapeng520/zdpgo_mongo/mongo#Connect).
+For more advanced configuration and authentication, see
+the [documentation for mongo.Connect](https://pkg.go.dev/github.com/zhangdapeng520/zdpgo_mongo/mongo#Connect).
 
-Calling `Connect` does not block for server discovery. If you wish to know if a MongoDB server has been found and connected to,
+Calling `Connect` does not block for server discovery. If you wish to know if a MongoDB server has been found and
+connected to,
 use the `Ping` method:
 
 ```go
@@ -99,14 +96,14 @@ Your import statement should now look like this:
 
 ```go
 import (
-    "context"
-    "log"
-    "time"
+"context"
+"log"
+"time"
 
-    "github.com/zhangdapeng520/zdpgo_mongo/bson"
-    "github.com/zhangdapeng520/zdpgo_mongo/mongo"
-    "github.com/zhangdapeng520/zdpgo_mongo/mongo/options"
-    "github.com/zhangdapeng520/zdpgo_mongo/mongo/readpref"
+"github.com/zhangdapeng520/zdpgo_mongo/bson"
+"github.com/zhangdapeng520/zdpgo_mongo/mongo"
+"github.com/zhangdapeng520/zdpgo_mongo/mongo/options"
+"github.com/zhangdapeng520/zdpgo_mongo/mongo/readpref"
 )
 ```
 
@@ -119,13 +116,13 @@ cur, err := collection.Find(ctx, bson.D{})
 if err != nil { log.Fatal(err) }
 defer cur.Close(ctx)
 for cur.Next(ctx) {
-    var result bson.D
-    err := cur.Decode(&result)
-    if err != nil { log.Fatal(err) }
-    // do something with result....
+var result bson.D
+err := cur.Decode(&result)
+if err != nil { log.Fatal(err) }
+// do something with result....
 }
 if err := cur.Err(); err != nil {
-    log.Fatal(err)
+log.Fatal(err)
 }
 ```
 
@@ -133,22 +130,23 @@ For methods that return a single item, a `SingleResult` instance is returned:
 
 ```go
 var result struct {
-    Value float64
+Value float64
 }
 filter := bson.D{{"name", "pi"}}
 ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 defer cancel()
 err = collection.FindOne(ctx, filter).Decode(&result)
 if err == mongo.ErrNoDocuments {
-    // Do something when no record was found
-    fmt.Println("record does not exist")
+// Do something when no record was found
+fmt.Println("record does not exist")
 } else if err != nil {
-    log.Fatal(err)
+log.Fatal(err)
 }
 // Do something with result...
 ```
 
-Additional examples and documentation can be found under the examples directory and [on the MongoDB Documentation website](https://www.mongodb.com/docs/drivers/go/current/).
+Additional examples and documentation can be found under the examples directory
+and [on the MongoDB Documentation website](https://www.mongodb.com/docs/drivers/go/current/).
 
 ### Network Compression
 
@@ -162,7 +160,8 @@ The Go Driver supports the following compression algorithms:
 
 #### Specify Compression Algorithms
 
-Compression can be enabled using the `compressors` parameter on the connection string or by using [`ClientOptions.SetCompressors`](https://pkg.go.dev/github.com/zhangdapeng520/zdpgo_mongo/mongo/options#ClientOptions.SetCompressors):
+Compression can be enabled using the `compressors` parameter on the connection string or by using [
+`ClientOptions.SetCompressors`](https://pkg.go.dev/github.com/zhangdapeng520/zdpgo_mongo/mongo/options#ClientOptions.SetCompressors):
 
 ```go
 opts := options.Client().ApplyURI("mongodb://localhost:27017/?compressors=snappy,zlib,zstd")
@@ -174,7 +173,9 @@ opts := options.Client().SetCompressors([]string{"snappy", "zlib", "zstd"})
 client, _ := mongo.Connect(context.TODO(), opts)
 ```
 
-If compressors are set, the Go Driver negotiates with the server to select the first common compressor. For server configuration and defaults, refer to [`networkMessageCompressors`](https://www.mongodb.com/docs/manual/reference/program/mongod/#std-option-mongod.--networkMessageCompressors).
+If compressors are set, the Go Driver negotiates with the server to select the first common compressor. For server
+configuration and defaults, refer to [
+`networkMessageCompressors`](https://www.mongodb.com/docs/manual/reference/program/mongod/#std-option-mongod.--networkMessageCompressors).
 
 Messages compress when both parties enable network compression; otherwise, messages remain uncompressed
 
@@ -182,7 +183,8 @@ ______________________________________________________________________
 
 ## Feedback
 
-For help with the driver, please post in the [MongoDB Community Forums](https://developer.mongodb.com/community/forums/tag/golang/).
+For help with the driver, please post in
+the [MongoDB Community Forums](https://developer.mongodb.com/community/forums/tag/golang/).
 
 New features and bugs can be reported on jira: https://jira.mongodb.org/browse/GODRIVER
 
@@ -190,7 +192,8 @@ ______________________________________________________________________
 
 ## Contribution
 
-Check out the [project page](https://jira.mongodb.org/browse/GODRIVER) for tickets that need completing. See our [contribution guidelines](docs/CONTRIBUTING.md) for details.
+Check out the [project page](https://jira.mongodb.org/browse/GODRIVER) for tickets that need completing. See
+our [contribution guidelines](docs/CONTRIBUTING.md) for details.
 
 ______________________________________________________________________
 
@@ -216,3 +219,13 @@ ______________________________________________________________________
 ## License
 
 The MongoDB Go Driver is licensed under the [Apache License](LICENSE).
+
+## 版本历史
+
+### v0.1.0
+
+- 基础代码
+
+### v0.1.1
+
+- pkcs8 本地化
